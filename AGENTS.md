@@ -24,6 +24,13 @@ Core methodology/system **consumes and contributes** here (docs, evals pointers,
 4. Valid `herdr-plugin.toml`; use `HERDR_BIN_PATH` when under Herdr.
 5. Compliance evals in `evals/` (≤10) — do/don't policy, not challenges.
 6. Dual-write AGENTS/README when layout/commands change.
+7. **LSP (tyler-jewell rule 13)** — Languages in active use and public LSPs:
+   | Language | Public LSP | Project setup |
+   |----------|------------|---------------|
+   | JavaScript | typescript-language-server | `jsconfig.json` (`checkJs`, strict) |
+   | Python | Pyright | `pyrightconfig.json` (strict) |
+   | Bash | bash-language-server | declare here; no `.shellcheckrc` that disables all rules |
+   Agents **MUST** use LSP tools when coding; **must not** add `eslint-disable` / `# noqa` / `@ts-ignore` / blanket shellcheck disables as the fix; resolve root cause.
 
 ## Verify
 

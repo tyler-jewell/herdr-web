@@ -1,0 +1,9 @@
+{
+  "include": ["scripts", "test"],
+  "exclude": ["**/__pycache__"],
+  "typeCheckingMode": "strict",
+  "pythonVersion": "3.9",
+  "reportMissingImports": true,
+  "reportUnusedImport": true,
+  "venvPath": null
+}
