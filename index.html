@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Herdr Control — Integrations</title>
+    <link rel="stylesheet" href="css/app.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="brand">herdr<span>·web</span></div>
+      <div id="bridge-badge" class="badge badge-warn">bridge: checking…</div>
+      <nav aria-label="Herdr surfaces">
+        <a href="#integrations" data-nav="integrations" class="active"
+          >Integrations</a
+        >
+        <a href="#stream" data-nav="stream" class="stub">Live stream</a>
+        <a href="#workspaces" data-nav="workspaces" class="stub">Workspaces</a>
+        <a href="#agents" data-nav="agents" class="stub">Agents</a>
+        <a href="#panes" data-nav="panes" class="stub">Panes</a>
+      </nav>
+      <p class="hint">
+        Pure primitives only:<br />
+        <code>herdr integration status|install|uninstall</code><br />
+        Run local bridge:<br />
+        <code>./scripts/serve.sh</code>
+      </p>
+    </aside>
+
+    <main>
+      <section data-view="integrations" id="view-integrations">
+        <div class="view-header">
+          <h1>Integrations</h1>
+          <span id="count-label">—</span>
+          <div class="toolbar">
+            <button type="button" class="btn btn-primary" id="btn-refresh">
+              Refresh status
+            </button>
+            <button type="button" class="btn" id="btn-outdated">
+              Outdated only
+            </button>
+          </div>
+        </div>
+        <p style="color: var(--muted); margin-top: 0; max-width: 42rem">
+          Status from live <code>herdr integration status</code>. Install /
+          Uninstall run only
+          <code>herdr integration install|uninstall &lt;target&gt;</code> —
+          Herdr owns hooks and paths.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Status</th>
+              <th>Path</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="integration-list"></tbody>
+        </table>
+        <div id="log" aria-live="polite" aria-label="Command log"></div>
+      </section>
+
+      <section data-view="stream" id="view-stream" hidden>
+        <div class="stub-panel">
+          <h1>Live stream (skeleton)</h1>
+          <p>
+            Placeholder for streaming Herdr events / panes / agents via Herdr
+            socket API primitives. Integrations above are the real
+            implementation for this skeleton.
+          </p>
+        </div>
+      </section>
+
+      <section data-view="workspaces" id="view-workspaces" hidden>
+        <div class="stub-panel">
+          <h1>Workspaces (skeleton)</h1>
+          <p>Future: <code>herdr workspace …</code> primitives.</p>
+        </div>
+      </section>
+
+      <section data-view="agents" id="view-agents" hidden>
+        <div class="stub-panel">
+          <h1>Agents (skeleton)</h1>
+          <p>Future: <code>herdr agent …</code> primitives.</p>
+        </div>
+      </section>
+
+      <section data-view="panes" id="view-panes" hidden>
+        <div class="stub-panel">
+          <h1>Panes (skeleton)</h1>
+          <p>Future: <code>herdr pane …</code> primitives.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Classic scripts so file:// can still load core for offline inspection -->
+    <script src="js/herdr-core.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
