@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Long-lived plugin pane: serve Integrations UI and open a *real browser*
 # (official.browser in-pane when available, else system browser).
+#
+# Host Chrome/Bun/PATH and Herdr graphics settings belong in version-controlled
+# machine config (home-manager + ~/.config/herdr/config.toml) — not ad-hoc exports.
 set -euo pipefail
 
 ROOT="${HERDR_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
@@ -65,9 +68,10 @@ wait_for_url() {
 
 open_real_browser() {
   # 1) In-pane Chromium via official.browser (Herdr graphics pane).
-  # Try-open (no plugin list): nested CLI may be restricted unless allow_nested.
+  # Chrome is discovered by official.browser from PATH / its own rules —
+  # do not inject one-off HERDR_BROWSER_CHROME workarounds here.
   echo "browser: trying official.browser → $URL"
-  local err=""
+  local err="" rc=0
   set +e
   err="$("$HERDR_BIN" plugin pane open \
     --plugin official.browser \
@@ -76,7 +80,7 @@ open_real_browser() {
     --direction right \
     --env "HERDR_BROWSER_INITIAL_URL=${URL}" \
     --focus 2>&1)"
-  local rc=$?
+  rc=$?
   set -e
   if [[ $rc -eq 0 ]]; then
     echo "browser: in-pane Chromium opened (official.browser)"
@@ -87,10 +91,13 @@ open_real_browser() {
     echo "browser: detail: $err"
   fi
   echo "help[1]:"
-  echo "  herdr plugin install ogulcancelik/herdr-browser --yes"
-  echo "  # requires: bun on PATH, Chrome/Chromium, [experimental] kitty_graphics = true"
+  echo "  Fix host setup in version-controlled config (not shell exports):"
+  echo "  - ~/.config/herdr/config.toml  → [experimental] kitty_graphics = true"
+  echo "  - home-manager (~/system)      → bun + chromium on PATH for official.browser"
+  echo "  - herdr plugin install ogulcancelik/herdr-browser --yes"
+  echo "  Then: herdr server reload-config  (or restart server if PATH changed)"
 
-  # 2) System browser (actual GUI browser window) — always a real browser.
+  # 2) System browser (actual GUI browser window).
   if command -v open >/dev/null 2>&1; then
     echo "browser: open (macOS) → $URL"
     open "$URL" && return 0
@@ -104,7 +111,7 @@ open_real_browser() {
   echo "  code: 1"
   echo "  message: no browser available to open $URL"
   echo "help[1]:"
-  echo "  Install official.browser or open $URL manually"
+  echo "  Install official.browser (tracked host packages) or open $URL manually"
   return 1
 }
 

@@ -36,9 +36,18 @@ herdr plugin pane open --plugin tyler-jewell.herdr-web --entrypoint integrations
 
 The `integrations` pane starts the bridge, then opens the UI in an **actual browser**:
 
-1. **Preferred:** in-pane Chromium via [`official.browser`](https://github.com/ogulcancelik/herdr-browser)  
-   (`herdr plugin install ogulcancelik/herdr-browser --yes`, plus Bun, Chrome/Chromium, and `[experimental] kitty_graphics = true` in Herdr config)
+1. **Preferred:** in-pane Chromium via [`official.browser`](https://github.com/ogulcancelik/herdr-browser)
 2. **Fallback:** system browser (`open` on macOS / `xdg-open` on Linux) at `http://127.0.0.1:8765/`
+
+**Host setup is version-controlled** (no ad-hoc `export HERDR_BROWSER_CHROME=…`):
+
+| Concern | Tracked config |
+|---------|----------------|
+| Kitty graphics + nested CLI | `~/.config/herdr/config.toml` → `[experimental] kitty_graphics = true` |
+| Bun + `chromium` on PATH | home-manager `~/system/modules/home/herdr-browser.nix` |
+| Plugin | `herdr plugin install ogulcancelik/herdr-browser --yes` |
+
+After PATH changes: restart the Herdr server (or re-login) so panes inherit the new environment.
 
 Manifest: `herdr-plugin.toml` (id, name, version, min_herdr_version, actions, panes).
 

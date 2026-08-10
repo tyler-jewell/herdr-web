@@ -25,21 +25,26 @@ Core methodology/system **consumes and contributes** here (docs, evals pointers,
 5. Compliance evals in `evals/` (≤10) — do/don't policy, not challenges.
 6. Dual-write AGENTS/README when layout/commands change.
 7. **LSP (tyler-jewell rule 13)** — Languages in active use and public LSPs:
-   | Language | Public LSP | Project setup |
-   |----------|------------|---------------|
-   | JavaScript | typescript-language-server | `jsconfig.json` (`checkJs`, strict) |
-   | Python | Pyright | `pyrightconfig.json` (strict) |
-   | Bash | bash-language-server | declare here; no `.shellcheckrc` that disables all rules |
-   | HTML | [vscode-html-languageserver](https://github.com/microsoft/vscode-html-languageservice) (public HTML LSP; also via vscode-langservers-extracted) | `index.html` + editor/agent HTML language mode |
-   | CSS | [vscode-css-languageserver](https://github.com/microsoft/vscode-css-languageservice) (public CSS LSP; also via vscode-langservers-extracted) | `css/**/*.css` + editor/agent CSS language mode |
+   | Language | Public LSP (standalone — **no VS Code IDE required**) | Project setup |
+   |----------|--------------------------------------------------------|---------------|
+   | JavaScript | [typescript-language-server](https://github.com/typescript-language-server/typescript-language-server) | `jsconfig.json` (`checkJs`, strict) |
+   | Python | [Pyright](https://github.com/microsoft/pyright) | `pyrightconfig.json` (strict) |
+   | Bash | [bash-language-server](https://github.com/bash-lsp/bash-language-server) | declare here; no `.shellcheckrc` that disables all rules |
+   | HTML | [vscode-langservers-extracted](https://github.com/hrsh7th/vscode-langservers-extracted) → `vscode-html-language-server` (npm package; **not** the VS Code app) | `index.html` |
+   | CSS | [vscode-langservers-extracted](https://github.com/hrsh7th/vscode-langservers-extracted) → `vscode-css-language-server` (npm package; **not** the VS Code app) | `css/**/*.css` |
+
+   Install HTML/CSS servers without VS Code, e.g. `npm i -g vscode-langservers-extracted` (or project/devDependency + `npx`). Do **not** require downloading Visual Studio Code.
+
    Agents **MUST** use LSP tools when coding; **must not** add `eslint-disable` / `# noqa` / `@ts-ignore` / blanket shellcheck disables as the fix; resolve root cause.
 
 ## Browser pane
 
 `scripts/plugin-pane.sh` (manifest entrypoint `integrations`) must open a **real browser**, not only print serve logs:
 
-1. Prefer `official.browser` pane with `HERDR_BROWSER_INITIAL_URL`
+1. Prefer `official.browser` pane with `HERDR_BROWSER_INITIAL_URL` (page to open — not host config)
 2. Else system browser (`open` / `xdg-open`) to `http://$HOST:$PORT/`
+
+**Config-first:** Chrome/Bun/PATH and Herdr graphics live in **version-controlled host config** (`~/system` home-manager, `~/.config/herdr/config.toml`). Do **not** teach or inject ad-hoc `export HERDR_BROWSER_CHROME=…` workarounds in this product.
 
 Do not regress to terminal-only serve for the integrations pane.
 
