@@ -9,8 +9,8 @@ Methodology (consume/contribute): **https://github.com/tyler-jewell/tyler-jewell
 ## Prerequisites
 
 - [Herdr](https://herdr.dev) on `PATH` (`herdr` ≥ 0.8)
-- Python 3 (stdlib bridge)
-- **Maintainers:** `gh auth login` before publish
+- [Go](https://go.dev) on `PATH` (bridge is Go — no Python). Prefer host home-manager packages: `go` + `gopls`.
+- **Maintainers:** `gh auth login` before publish; public deploys use **Vercel** (`vercel login` once on the host).
 
 ## Stand up in 2 steps (isolation)
 
@@ -85,5 +85,16 @@ export HERDR_EVALS_LAYERS="$HOME/github-repos/tyler-jewell/evals:$HOME/github-re
 
 ```bash
 ./test/run.sh
-python3 ./test/test_hmr.py
+go test ./cmd/bridge/
 ```
+
+## Stack (umbrella sacred rules)
+
+| Layer | Choice |
+|-------|--------|
+| Backend / bridge | **Go** only (`cmd/bridge`) |
+| Frontend | Vanilla **HTML / CSS / JS** |
+| UI package | **shadcn** only (when a package is needed) |
+| PWA bar | Score against https://web.dev/learn/pwa (Lighthouse PWA) |
+| Auth | **WebAuthn passkeys** when auth is added |
+| Public host | **Vercel** |

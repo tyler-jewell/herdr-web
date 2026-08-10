@@ -24,16 +24,20 @@ Core methodology/system **consumes and contributes** here (docs, evals pointers,
 4. Valid `herdr-plugin.toml`; use `HERDR_BIN_PATH` when under Herdr.
 5. Compliance evals in `evals/` (≤10) — do/don't policy, not challenges.
 6. Dual-write AGENTS/README when layout/commands change.
-7. **LSP (tyler-jewell rule 13)** — Languages in active use and public LSPs:
+7. **Go only — never Python (umbrella rule 14)** — Bridge and any backend/scripting is **Go** (`cmd/bridge`, `go.mod`). Do not add `*.py` or Pyright. Shell only for thin glue (`scripts/*.sh`, evals).
+8. **Frontend + PWA + shadcn (umbrella rule 15)** — Vanilla **HTML / CSS / JS** only. Score against **https://web.dev/learn/pwa** (Lighthouse PWA) before public release. Only UI package allowed: **shadcn**.
+9. **WebAuthn passkeys (umbrella rule 16)** — Auth for this web product and its backend is passkey-first when auth is introduced.
+10. **Vercel public host (umbrella rule 17)** — Public deploys of this product go to Vercel (`vercel` CLI from host Nix flake; human `vercel login` once).
+11. **LSP (tyler-jewell rule 13)** — Languages in active use and public LSPs:
    | Language | Public LSP (standalone — **no VS Code IDE required**) | Project setup |
    |----------|--------------------------------------------------------|---------------|
+   | Go | [gopls](https://github.com/golang/tools/tree/master/gopls) | `go.mod` + `cmd/bridge`; gopls from home-manager flake |
    | JavaScript | [typescript-language-server](https://github.com/typescript-language-server/typescript-language-server) | `jsconfig.json` (`checkJs`, strict) |
-   | Python | [Pyright](https://github.com/microsoft/pyright) | `pyrightconfig.json` (strict) |
    | Bash | [bash-language-server](https://github.com/bash-lsp/bash-language-server) | declare here; no `.shellcheckrc` that disables all rules |
    | HTML | [vscode-langservers-extracted](https://github.com/hrsh7th/vscode-langservers-extracted) → `vscode-html-language-server` (npm package; **not** the VS Code app) | `index.html` |
    | CSS | [vscode-langservers-extracted](https://github.com/hrsh7th/vscode-langservers-extracted) → `vscode-css-language-server` (npm package; **not** the VS Code app) | `css/**/*.css` |
 
-   Install HTML/CSS servers without VS Code, e.g. `npm i -g vscode-langservers-extracted` (or project/devDependency + `npx`). Do **not** require downloading Visual Studio Code.
+   Install HTML/CSS servers without VS Code, e.g. `npm i -g vscode-langservers-extracted` (or project/devDependency + `npx`). Do **not** require downloading Visual Studio Code. **gopls** and **go** must be on PATH from the host flake (`~/system` packages).
 
    Agents **MUST** use LSP tools when coding; **must not** add `eslint-disable` / `# noqa` / `@ts-ignore` / blanket shellcheck disables as the fix; resolve root cause.
 
@@ -55,7 +59,7 @@ herdr plugin link .
 herdr plugin list --json
 ./scripts/evals.sh run
 ./scripts/serve.sh
-python3 ./test/test_hmr.py
+go test ./cmd/bridge/
 # Inside Herdr: must open a real browser surface
 herdr plugin pane open --plugin tyler-jewell.herdr-web --entrypoint integrations
 ```

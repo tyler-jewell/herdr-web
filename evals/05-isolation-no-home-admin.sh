@@ -3,7 +3,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 # serve scripts should not hardcode /Users/
-if grep -nE '/Users/[a-zA-Z0-9_-]+/' "$ROOT/scripts/serve.sh" "$ROOT/scripts/bridge.py" "$ROOT/scripts/plugin-pane.sh" 2>/dev/null; then
+if grep -nE '/Users/[a-zA-Z0-9_-]+/' "$ROOT/scripts/serve.sh" "$ROOT/cmd/bridge/main.go" "$ROOT/scripts/plugin-pane.sh" 2>/dev/null; then
   echo "FAIL: absolute home paths in serve entry"
   exit 1
 fi

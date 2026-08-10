@@ -25,7 +25,7 @@ ENV
   HERDR_WEB_HOST   bind host (default 127.0.0.1)
   HERDR_WEB_ROOT   static root (default: repo root)
 
-Requires: herdr and python3 on PATH.
+Requires: herdr and go on PATH (Go bridge).
 AXI: https://axi.md · unknown flags exit 2.
 EOF
 }
@@ -68,10 +68,12 @@ if ! command -v herdr >/dev/null 2>&1; then
   exit 1
 fi
 
-if ! command -v python3 >/dev/null 2>&1; then
+if ! command -v go >/dev/null 2>&1; then
   echo "error:"
   echo "  code: 1"
-  echo "  message: python3 required for the tiny bridge"
+  echo "  message: go required for the bridge (tyler-jewell sacred rule 14)"
+  echo "help[1]:"
+  echo "  Install go via home-manager (packages: go gopls) then re-run"
   exit 1
 fi
 
@@ -80,9 +82,11 @@ echo "description: herdr-web static UI + pure herdr integration bridge"
 echo "url: http://${HOST}:${PORT}/"
 echo "bridge: POST /api/herdr {\"argv\":[\"herdr\",\"integration\",…]}"
 echo "herdr: $(command -v herdr) ($(herdr --version 2>/dev/null | head -1))"
+echo "go: $(command -v go) ($(go version 2>/dev/null))"
 echo "help[2]:"
 echo "  Open http://${HOST}:${PORT}/ and click Refresh status"
 echo "  POST /api/herdr with validated herdr integration argv only"
 echo "Ctrl-C to stop."
 
-exec python3 "$ROOT/scripts/bridge.py"
+cd "$ROOT"
+exec go run ./cmd/bridge

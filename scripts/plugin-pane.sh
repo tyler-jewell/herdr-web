@@ -31,22 +31,12 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 port_listening() {
-  # Pure bash TCP probe — no lsof/nc required.
-  if command -v python3 >/dev/null 2>&1; then
-    python3 - "$HOST" "$PORT" <<'PY' 2>/dev/null
-import socket, sys
-host, port = sys.argv[1], int(sys.argv[2])
-s = socket.socket()
-s.settimeout(0.4)
-try:
-    s.connect((host, port))
-except OSError:
-    sys.exit(1)
-else:
-    s.close()
-    sys.exit(0)
-PY
-    return $?
+  # Pure bash TCP probe — no Python, no lsof/nc required.
+  if (echo >/dev/tcp/"$HOST"/"$PORT") >/dev/null 2>&1; then
+    return 0
+  fi
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsS -o /dev/null --max-time 1 "http://${HOST}:${PORT}/" 2>/dev/null && return 0
   fi
   return 1
 }
