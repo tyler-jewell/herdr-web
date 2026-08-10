@@ -11,6 +11,8 @@ Works with **any** Herdr install on your PATH. Integration targets come from **l
 - [Herdr](https://herdr.dev) installed so `herdr` is on your `PATH`
 - Python 3 (stdlib only — used as a tiny local process bridge)
 
+**If you maintain or publish this repo (maintainers only):** run **`gh auth login` first** (manual browser OAuth), ideally before any day-0 or publish automation. End users only need `git clone` + `./scripts/serve.sh` for a local instance.
+
 ## Stand up in **2 steps**
 
 ```bash
