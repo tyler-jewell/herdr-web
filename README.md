@@ -22,7 +22,7 @@ git clone https://github.com/tyler-jewell/herdr-web.git && cd herdr-web
 Open **http://127.0.0.1:8765/** — Integrations via pure `herdr integration …`.  
 **Hot-reload is on by default:** edit `css/`, `js/`, or `index.html` and the browser picks up changes without a manual refresh (polls `/__hmr`). Disable with `HERDR_WEB_HOT_RELOAD=0`.
 
-## Herdr plugin (side-by-side)
+## Herdr plugin (side-by-side + real browser)
 
 ```bash
 cd /path/to/herdr-web
@@ -30,18 +30,24 @@ herdr plugin link .
 herdr plugin list
 herdr plugin action list --plugin tyler-jewell.herdr-web
 herdr plugin action invoke tyler-jewell.herdr-web.evals-list
-# Side-by-side pane (inside a Herdr session):
+# Side-by-side pane (inside a Herdr session) — opens a *real browser*:
 herdr plugin pane open --plugin tyler-jewell.herdr-web --entrypoint integrations
 ```
+
+The `integrations` pane starts the bridge, then opens the UI in an **actual browser**:
+
+1. **Preferred:** in-pane Chromium via [`official.browser`](https://github.com/ogulcancelik/herdr-browser)  
+   (`herdr plugin install ogulcancelik/herdr-browser --yes`, plus Bun, Chrome/Chromium, and `[experimental] kitty_graphics = true` in Herdr config)
+2. **Fallback:** system browser (`open` on macOS / `xdg-open` on Linux) at `http://127.0.0.1:8765/`
 
 Manifest: `herdr-plugin.toml` (id, name, version, min_herdr_version, actions, panes).
 
 | Action | Purpose |
 |--------|---------|
-| `serve` | Long-lived UI + bridge (hot-reload) |
+| `serve` | Long-lived UI + bridge (hot-reload) only |
 | `evals-list` | List compliance evals (≤10) |
 | `evals-run` | Run compliance evals |
-| pane `integrations` | Split pane running serve |
+| pane `integrations` | Bridge + open real browser to the UI |
 
 ## What agents may do
 

@@ -28,4 +28,5 @@ command = ["bash", "scripts/evals.sh", "run"]
 id = "integrations"
 title = "Herdr Web"
 placement = "split"
+# Starts bridge + opens a real browser (official.browser or system open)
 command = ["bash", "scripts/plugin-pane.sh"]

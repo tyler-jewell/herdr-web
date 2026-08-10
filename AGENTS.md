@@ -30,7 +30,18 @@ Core methodology/system **consumes and contributes** here (docs, evals pointers,
    | JavaScript | typescript-language-server | `jsconfig.json` (`checkJs`, strict) |
    | Python | Pyright | `pyrightconfig.json` (strict) |
    | Bash | bash-language-server | declare here; no `.shellcheckrc` that disables all rules |
+   | HTML | [vscode-html-languageserver](https://github.com/microsoft/vscode-html-languageservice) (public HTML LSP; also via vscode-langservers-extracted) | `index.html` + editor/agent HTML language mode |
+   | CSS | [vscode-css-languageserver](https://github.com/microsoft/vscode-css-languageservice) (public CSS LSP; also via vscode-langservers-extracted) | `css/**/*.css` + editor/agent CSS language mode |
    Agents **MUST** use LSP tools when coding; **must not** add `eslint-disable` / `# noqa` / `@ts-ignore` / blanket shellcheck disables as the fix; resolve root cause.
+
+## Browser pane
+
+`scripts/plugin-pane.sh` (manifest entrypoint `integrations`) must open a **real browser**, not only print serve logs:
+
+1. Prefer `official.browser` pane with `HERDR_BROWSER_INITIAL_URL`
+2. Else system browser (`open` / `xdg-open`) to `http://$HOST:$PORT/`
+
+Do not regress to terminal-only serve for the integrations pane.
 
 ## Verify
 
@@ -40,4 +51,6 @@ herdr plugin list --json
 ./scripts/evals.sh run
 ./scripts/serve.sh
 python3 ./test/test_hmr.py
+# Inside Herdr: must open a real browser surface
+herdr plugin pane open --plugin tyler-jewell.herdr-web --entrypoint integrations
 ```
