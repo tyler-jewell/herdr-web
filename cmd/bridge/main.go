@@ -30,8 +30,10 @@ import (
 
 var (
 	root = envOr("HERDR_WEB_ROOT", "")
+	// Bind from env only (serve.sh loads claim from ports.toml — sacred rule 22).
+	// No hardcoded port default in code.
 	host = envOr("HERDR_WEB_HOST", "127.0.0.1")
-	port = envOr("HERDR_WEB_PORT", "8765")
+	port = envOr("HERDR_WEB_PORT", "")
 	hot  = hotEnabled()
 
 	targetSlug = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
@@ -314,6 +316,9 @@ func main() {
 	root = resolveRoot()
 	if err := os.Chdir(root); err != nil {
 		log.Fatal(err)
+	}
+	if port == "" {
+		log.Fatal("HERDR_WEB_PORT unset — set env or run via serve.sh (loads ports.toml claim; rule 22)")
 	}
 
 	mux := http.NewServeMux()

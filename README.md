@@ -19,10 +19,10 @@ git clone https://github.com/tyler-jewell/herdr-web.git && cd herdr-web
 ./scripts/serve.sh
 ```
 
-Open **http://127.0.0.1:8765/** — Integrations via pure `herdr integration …`.  
+Serve prints the live **`url:`** (from **`ports.toml`** claim, overridable via `HERDR_WEB_PORT` / `HERDR_WEB_HOST` — do **not** hardcode ports in docs). Integrations use pure `herdr integration …`.  
 **Hot-reload is on by default:** edit `css/`, `js/`, or `index.html` and the browser picks up changes without a manual refresh (polls `/__hmr`). Disable with `HERDR_WEB_HOT_RELOAD=0`.
 
-## Herdr plugin (side-by-side + real browser)
+## Herdr plugin (side-by-side)
 
 ```bash
 cd /path/to/herdr-web
@@ -30,33 +30,20 @@ herdr plugin link .
 herdr plugin list
 herdr plugin action list --plugin tyler-jewell.herdr-web
 herdr plugin action invoke tyler-jewell.herdr-web.evals-list
-# Side-by-side pane (inside a Herdr session) — opens a *real browser*:
+# Side-by-side pane (inside a Herdr session) — serves the UI bridge:
 herdr plugin pane open --plugin tyler-jewell.herdr-web --entrypoint integrations
 ```
 
-The `integrations` pane starts the bridge, then opens the UI in an **actual browser**:
-
-1. **Preferred:** in-pane Chromium via [`official.browser`](https://github.com/ogulcancelik/herdr-browser)
-2. **Fallback:** system browser (`open` on macOS / `xdg-open` on Linux) at `http://127.0.0.1:8765/`
-
-**Host setup is version-controlled** (no ad-hoc `export HERDR_BROWSER_CHROME=…`):
-
-| Concern | Tracked config |
-|---------|----------------|
-| Kitty graphics + nested CLI | `~/.config/herdr/config.toml` → `[experimental] kitty_graphics = true` |
-| Bun + `chromium` on PATH | home-manager `~/system/modules/home/herdr-browser.nix` |
-| Plugin | `herdr plugin install ogulcancelik/herdr-browser --yes` |
-
-After PATH changes: restart the Herdr server (or re-login) so panes inherit the new environment.
+Use the **`url:`** line from `serve` / pane output (claimed in [`ports.toml`](ports.toml)).
 
 Manifest: `herdr-plugin.toml` (id, name, version, min_herdr_version, actions, panes).
 
 | Action | Purpose |
 |--------|---------|
-| `serve` | Long-lived UI + bridge (hot-reload) only |
+| `serve` | Long-lived UI + bridge (hot-reload) |
 | `evals-list` | List compliance evals (≤10) |
 | `evals-run` | Run compliance evals |
-| pane `integrations` | Bridge + open real browser to the UI |
+| pane `integrations` | Split pane running serve |
 
 ## What agents may do
 

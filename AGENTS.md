@@ -24,6 +24,7 @@ Core methodology/system **consumes and contributes** here (docs, evals pointers,
 4. Valid `herdr-plugin.toml`; use `HERDR_BIN_PATH` when under Herdr.
 5. Compliance evals in `evals/` (≤10) — do/don't policy, not challenges.
 6. Dual-write AGENTS/README when layout/commands change.
+6b. **Ports (umbrella rule 22)** — Never hardcode local listen ports in docs/code. Claim in sibling **`ports.toml`**; `serve.sh` loads the claim (env overrides). Print live `url:` at serve time. **Bad:** sticky “open this fixed host:port” instructions; **good:** point at `ports.toml` + serve `url:` line.
 7. **Go only — never Python (umbrella rule 14)** — Bridge and any backend/scripting is **Go** (`cmd/bridge`, `go.mod`). Do not add `*.py` or Pyright. Shell only for thin glue (`scripts/*.sh`, evals).
 8. **Frontend + PWA + shadcn (umbrella rule 15)** — Vanilla **HTML / CSS / JS** only. Score against **https://web.dev/learn/pwa** (Lighthouse PWA) before public release. Only UI package allowed: **shadcn**.
 9. **WebAuthn passkeys (umbrella rule 16)** — Auth for this web product and its backend is passkey-first when auth is introduced.
@@ -42,17 +43,6 @@ Core methodology/system **consumes and contributes** here (docs, evals pointers,
 
    Agents **MUST** use LSP tools when coding; **must not** add `eslint-disable` / `# noqa` / `@ts-ignore` / blanket shellcheck disables as the fix; resolve root cause.
 
-## Browser pane
-
-`scripts/plugin-pane.sh` (manifest entrypoint `integrations`) must open a **real browser**, not only print serve logs:
-
-1. Prefer `official.browser` pane with `HERDR_BROWSER_INITIAL_URL` (page to open — not host config)
-2. Else system browser (`open` / `xdg-open`) to `http://$HOST:$PORT/`
-
-**Config-first:** Chrome/Bun/PATH and Herdr graphics live in **version-controlled host config** (`~/system` home-manager, `~/.config/herdr/config.toml`). Do **not** teach or inject ad-hoc `export HERDR_BROWSER_CHROME=…` workarounds in this product.
-
-Do not regress to terminal-only serve for the integrations pane.
-
 ## Verify
 
 ```bash
@@ -61,6 +51,6 @@ herdr plugin list --json
 ./scripts/evals.sh run
 ./scripts/serve.sh
 go test ./cmd/bridge/
-# Inside Herdr: must open a real browser surface
+# Inside Herdr (optional split pane running serve):
 herdr plugin pane open --plugin tyler-jewell.herdr-web --entrypoint integrations
 ```

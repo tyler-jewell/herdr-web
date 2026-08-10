@@ -1,0 +1,10 @@
+# Local port claims for this tree (tyler-jewell sacred rule 22).
+# Update this file before changing bind ports. Env overrides still win at runtime.
+
+[[port]]
+app = "herdr-web"
+port = 8765
+host = "127.0.0.1"
+purpose = "Integrations UI + pure herdr integration bridge"
+env_port = "HERDR_WEB_PORT"
+env_host = "HERDR_WEB_HOST"
