@@ -28,7 +28,8 @@ Core methodology/system **consumes and contributes** here (docs, evals pointers,
 8. **Frontend + PWA + shadcn (umbrella rule 15)** — Vanilla **HTML / CSS / JS** only. Score against **https://web.dev/learn/pwa** (Lighthouse PWA) before public release. Only UI package allowed: **shadcn**.
 9. **WebAuthn passkeys (umbrella rule 16)** — Auth for this web product and its backend is passkey-first when auth is introduced.
 10. **Vercel public host (umbrella rule 17)** — Public deploys of this product go to Vercel (`vercel` CLI from host Nix flake; human `vercel login` once).
-11. **LSP (tyler-jewell rule 13)** — Languages in active use and public LSPs:
+11. **Maturity re-score (umbrella rule 18)** — Requirements scores live in the tyler-jewell umbrella scorecard (`docs/requirements/scorecard.md`). Any change here that affects rules 12–17 (product, Go, frontend/PWA, passkeys, Vercel, LSP) **must** trigger an umbrella scorecard re-score. Scores &lt; 100% = **development**; do not claim the core stack finished while the public gate is **BLOCKED**.
+12. **LSP (tyler-jewell rule 13)** — Languages in active use and public LSPs:
    | Language | Public LSP (standalone — **no VS Code IDE required**) | Project setup |
    |----------|--------------------------------------------------------|---------------|
    | Go | [gopls](https://github.com/golang/tools/tree/master/gopls) | `go.mod` + `cmd/bridge`; gopls from home-manager flake |
