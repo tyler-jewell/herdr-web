@@ -50,9 +50,14 @@ done
 export HERDR_WEB_ROOT="$ROOT"
 export HERDR_WEB_PORT="$PORT"
 export HERDR_WEB_HOST="$HOST"
+# Hot-reload ON by default (isolatable product path)
+export HERDR_WEB_HOT_RELOAD="${HERDR_WEB_HOT_RELOAD:-1}"
 
-# Prefer herdr on PATH; common user install location.
+# Prefer herdr on PATH; plugin injects HERDR_BIN_PATH
 export PATH="${HOME}/.local/bin:${PATH}"
+if [[ -n "${HERDR_BIN_PATH:-}" ]]; then
+  export PATH="$(dirname "$HERDR_BIN_PATH"):${PATH}"
+fi
 
 if ! command -v herdr >/dev/null 2>&1; then
   echo "error:"

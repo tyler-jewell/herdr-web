@@ -1,67 +1,74 @@
 # herdr-web
 
-Static **HTML / CSS / JS** control surface for [Herdr](https://herdr.dev).  
-**Integrations** is the real implementation; other nav items are UX skeleton.
+**Isolatable Herdr plugin product** — Integrations UI + compliance evals.  
+Runs against a normal Herdr install **without** the tyler-jewell umbrella or home admin tree.
 
-Public product: **`github.com/tyler-jewell/herdr-web`**.  
-Works with **any** Herdr install on your PATH. Integration targets come from **live** CLI discovery — never a frozen list in this repo.
+Public: **https://github.com/tyler-jewell/herdr-web**  
+Methodology (consume/contribute): **https://github.com/tyler-jewell/tyler-jewell**
 
-## Prerequisites (outside the two steps)
+## Prerequisites
 
-- [Herdr](https://herdr.dev) installed so `herdr` is on your `PATH`
-- Python 3 (stdlib only — used as a tiny local process bridge)
+- [Herdr](https://herdr.dev) on `PATH` (`herdr` ≥ 0.8)
+- Python 3 (stdlib bridge)
+- **Maintainers:** `gh auth login` before publish
 
-**If you maintain or publish this repo (maintainers only):** run **`gh auth login` first** (manual browser OAuth), ideally before any day-0 or publish automation. End users only need `git clone` + `./scripts/serve.sh` for a local instance.
-
-## Stand up in **2 steps**
+## Stand up in 2 steps (isolation)
 
 ```bash
-# 1) Get the code
 git clone https://github.com/tyler-jewell/herdr-web.git && cd herdr-web
-
-# 2) Serve (bridge + static UI)
 ./scripts/serve.sh
 ```
 
-Open **http://127.0.0.1:8765/** and click **Refresh status**.  
-That runs real `herdr integration status` via the local bridge.
+Open **http://127.0.0.1:8765/** — Integrations via pure `herdr integration …`.  
+**Hot-reload is on by default:** edit `css/`, `js/`, or `index.html` and the browser picks up changes without a manual refresh (polls `/__hmr`). Disable with `HERDR_WEB_HOT_RELOAD=0`.
 
-Optional: `HERDR_WEB_PORT=9000 ./scripts/serve.sh`
+## Herdr plugin (side-by-side)
 
-## What it does
-
-| Action | Pure Herdr primitive |
-|--------|----------------------|
-| Refresh | `herdr integration status` |
-| Outdated only | `herdr integration status --outdated-only` |
-| Install / Update | `herdr integration install <target>` |
-| Uninstall | `herdr integration uninstall <target>` |
-
-`<target>` names are discovered live from status / `install --help`.  
-The bridge only subprocesses validated `herdr integration …` argv — no install reimplementation.
-
-## Layout
-
-```
-herdr-web/
-  index.html
-  css/  js/
-  scripts/serve.sh      # step 2
-  scripts/bridge.py     # POST /api/herdr → herdr only
-  test/run.sh
-  hosts/.gitkeep        # hosts registry is NOT this product
+```bash
+cd /path/to/herdr-web
+herdr plugin link .
+herdr plugin list
+herdr plugin action list --plugin tyler-jewell.herdr-web
+herdr plugin action invoke tyler-jewell.herdr-web.evals-list
+# Side-by-side pane (inside a Herdr session):
+herdr plugin pane open --plugin tyler-jewell.herdr-web --entrypoint integrations
 ```
 
-## Hosts / multi-machine setup
+Manifest: `herdr-plugin.toml` (id, name, version, min_herdr_version, actions, panes).
 
-**Out of scope** for this repo. See the [tyler-jewell](https://github.com/tyler-jewell/tyler-jewell) methodology umbrella (`hosts/` registry, agent-kit). This repo ships only `hosts/.gitkeep` as a placeholder.
+| Action | Purpose |
+|--------|---------|
+| `serve` | Long-lived UI + bridge (hot-reload) |
+| `evals-list` | List compliance evals (≤10) |
+| `evals-run` | Run compliance evals |
+| pane `integrations` | Split pane running serve |
+
+## What agents may do
+
+| Agent role | May | Must not |
+|------------|-----|----------|
+| **herdr-web agents** | Edit UI/plugin scripts, evals, run serve/link | Commit secrets; hardcode integration target lists; reimplement herdr install |
+| **Methodology agents** (tyler-jewell) | Point kit/docs at this product; layer evals | Own a second parallel UI product |
+
+See [AGENTS.md](AGENTS.md).
+
+## Evals (compliance, ≤10)
+
+```bash
+./scripts/evals.sh list
+./scripts/evals.sh run
+```
+
+Optional multi-layer (methodology checkout present):
+
+```bash
+export HERDR_EVALS_LAYERS="$HOME/github-repos/tyler-jewell/evals:$HOME/github-repos/tyler-jewell/agent-kit/evals"
+./scripts/evals.sh run
+```
 
 ## Tests
 
 ```bash
 ./test/run.sh
+python3 ./test/test_hmr.py
 ```
-
-## Offline
-
-Without the bridge, use **Copy cmd** on a row — it copies the exact `herdr integration …` string for your terminal.

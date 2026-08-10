@@ -1,0 +1,31 @@
+# Herdr plugin manifest — isolatable product (https://herdr.dev/docs/plugins/)
+id = "tyler-jewell.herdr-web"
+name = "Herdr Web"
+version = "0.3.0"
+min_herdr_version = "0.8.0"
+description = "Integrations UI + compliance evals; hot-reload by default; pure herdr integration primitives"
+platforms = ["linux", "macos"]
+
+[[actions]]
+id = "serve"
+title = "Serve Integrations UI (hot-reload)"
+contexts = ["workspace"]
+command = ["bash", "scripts/serve.sh"]
+
+[[actions]]
+id = "evals-list"
+title = "List compliance evals"
+contexts = ["workspace"]
+command = ["bash", "scripts/evals.sh", "list"]
+
+[[actions]]
+id = "evals-run"
+title = "Run compliance evals"
+contexts = ["workspace"]
+command = ["bash", "scripts/evals.sh", "run"]
+
+[[panes]]
+id = "integrations"
+title = "Herdr Web"
+placement = "split"
+command = ["bash", "scripts/plugin-pane.sh"]

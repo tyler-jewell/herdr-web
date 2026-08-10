@@ -1,30 +1,36 @@
-# herdr-web — agent notes
-
-Standalone public product for a local Herdr Integrations UI.
+# herdr-web — agent notes (isolatable Herdr plugin)
 
 ## Scope
 
-- Static HTML/CSS/JS + thin bridge that only runs pure `herdr integration …` commands.
-- **Integrations** surface is real; stream/workspaces/agents/panes are stubs.
-- **Not** a hosts registry or machine bootstrap kit (`hosts/` is empty on purpose).
+This is the **only** stack product meant to be setup and run **in isolation**.  
+Core methodology/system **consumes and contributes** here (docs, evals pointers, agent workflows) — do not fork a second Integrations UI.
+
+## Access controls
+
+| Who | Write | Read/run |
+|-----|-------|----------|
+| Agents working in this repo | UI, plugin manifest, serve/bridge, `evals/` | All |
+| Agents in tyler-jewell only | Must not force-push this repo without human ask; may open PRs / document consumption | Clone + plugin link |
+| Humans | Link/install plugins, `gh` publish after `gh auth login` | All |
+
+**Never:** secrets, auth dumps, private absolute home paths as install requirements.
 
 ## Rules
 
-0. **AXI** — Agent-invokable surfaces (bridge argv, scripts agents run) must align with [AXI guidelines](https://axi.md) (umbrella tyler-jewell rule 11). Prefer token-efficient, non-interactive, content-first, structured errors. See tyler-jewell `docs/axi/axi-scorecard.md`.
-1. Prefer pure Herdr CLI primitives only:
-   - `herdr integration status [--outdated-only]`
-   - `herdr integration install <target>`
-   - `herdr integration uninstall <target>`
-2. Never hardcode integration target inventories — live discovery only (status / install --help).
-3. Never reimplement Herdr hook install paths or vendor curl installers.
-4. Bridge may only subprocess validated `herdr integration …` argv.
-5. Dual-write `AGENTS.md` + `README.md` when layout/commands change.
-6. No secrets in git. Paths in docs stay portable (`./scripts/…`, relative clone root).
+0. **AXI** — https://axi.md (tyler-jewell sacred rule 11). Content-first CLIs, exit 2 on unknown flags, non-interactive.
+1. Pure Herdr primitives only for integrations: `status|install|uninstall`.
+2. Never hardcode integration target inventories — live discovery only.
+3. **Hot-reload default** for isolatable serve (`HERDR_WEB_HOT_RELOAD=1`).
+4. Valid `herdr-plugin.toml`; use `HERDR_BIN_PATH` when under Herdr.
+5. Compliance evals in `evals/` (≤10) — do/don't policy, not challenges.
+6. Dual-write AGENTS/README when layout/commands change.
 
 ## Verify
 
 ```bash
-./test/run.sh
+herdr plugin link .
+herdr plugin list --json
+./scripts/evals.sh run
 ./scripts/serve.sh
-herdr integration status
+python3 ./test/test_hmr.py
 ```
