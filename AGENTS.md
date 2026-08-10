@@ -10,6 +10,7 @@ Standalone public product for a local Herdr Integrations UI.
 
 ## Rules
 
+0. **AXI** — Agent-invokable surfaces (bridge argv, scripts agents run) must align with [AXI guidelines](https://axi.md) (umbrella tyler-jewell rule 11). Prefer token-efficient, non-interactive, content-first, structured errors. See tyler-jewell `docs/axi/axi-scorecard.md`.
 1. Prefer pure Herdr CLI primitives only:
    - `herdr integration status [--outdated-only]`
    - `herdr integration install <target>`
